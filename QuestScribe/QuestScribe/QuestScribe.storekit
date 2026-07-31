@@ -1,0 +1,58 @@
+{
+  "identifier" : "QuestScribe StoreKit",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21653932",
+      "localizations" : [
+
+      ],
+      "name" : "QuestScribe Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "12.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "QSProMonthly",
+          "introductoryOffer" : {
+            "internalID" : "QSProTrial",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P7D",
+            "type" : "introduction"
+          },
+          "localizations" : [
+            {
+              "description" : "Scan unlimited handwritten prep notes during your sessions.",
+              "displayName" : "QuestScribe Pro",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.questscribe.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pro Monthly",
+          "subscriptionGroupID" : "21653932",
+          "type" : "recurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

@@ -7,10 +7,12 @@ import SwiftUI
 /// with a floating "Scan Notes" action.
 struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(PaywallManager.self) private var paywallManager
 
     @State private var coordinator = ScanCoordinator()
     @State private var selectedTab = 0
     @State private var showScanner = false
+    @State private var showPaywall = false
     @State private var pendingImage: UIImage?
     @State private var showAPIKeyAlert = false
 
@@ -19,31 +21,30 @@ struct DashboardView: View {
             NavigationStack {
                 QuestsListView()
             }
+            .toolbar { scanToolbarItem }
             .tabItem { Label("Quests", systemImage: "flag.fill") }
             .tag(0)
 
             NavigationStack {
                 LootListView()
             }
+            .toolbar { scanToolbarItem }
             .tabItem { Label("Loot", systemImage: "gift.fill") }
             .tag(1)
 
             NavigationStack {
                 NPCListView()
             }
+            .toolbar { scanToolbarItem }
             .tabItem { Label("NPCs", systemImage: "person.2.fill") }
             .tag(2)
 
             NavigationStack {
                 SettingsView()
             }
+            .toolbar { scanToolbarItem }
             .tabItem { Label("Settings", systemImage: "gearshape.fill") }
             .tag(3)
-        }
-        .overlay(alignment: .bottomTrailing) {
-            if !coordinator.isProcessing {
-                scanButton
-            }
         }
         .overlay {
             if coordinator.isProcessing {
@@ -55,6 +56,9 @@ struct DashboardView: View {
                 pendingImage = image
                 showScanner = false
             }
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView()
         }
         .onChange(of: pendingImage) { _, image in
             guard let image else { return }
@@ -80,24 +84,24 @@ struct DashboardView: View {
         }
     }
 
-    private var scanButton: some View {
-        Button {
-            if (KeychainHelper.loadAPIKey() ?? "").isEmpty {
-                showAPIKeyAlert = true
-            } else {
-                showScanner = true
+    private var scanToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button(action: handleScanTap) {
+                Label("Scan Notes", systemImage: "camera.viewfinder")
             }
-        } label: {
-            Label("Scan Notes", systemImage: "camera.viewfinder")
-                .font(.headline)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 14)
-                .background(Color.accentColor, in: Capsule())
-                .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
         }
-        .padding(.trailing, 20)
-        .padding(.bottom, 8)
+    }
+
+    private func handleScanTap() {
+        guard paywallManager.isPro else {
+            showPaywall = true
+            return
+        }
+        if (KeychainHelper.loadAPIKey() ?? "").isEmpty {
+            showAPIKeyAlert = true
+        } else {
+            showScanner = true
+        }
     }
 }
 

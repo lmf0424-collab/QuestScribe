@@ -4,12 +4,33 @@ import SwiftUI
 
 /// Simple API key management backed by the Keychain.
 struct SettingsView: View {
+    @Environment(PaywallManager.self) private var paywallManager
+
     @State private var apiKey = ""
     @State private var showSaved = false
+    @State private var showPaywall = false
     @State private var errorMessage: String?
 
     var body: some View {
         Form {
+            Section {
+                LabeledContent("Status", value: paywallManager.isPro ? "Pro" : "Free")
+                if !paywallManager.isPro {
+                    if paywallManager.localTrialActive {
+                        Text("Free trial active — \(paywallManager.trialDaysRemaining) day\(paywallManager.trialDaysRemaining == 1 ? "" : "s") left.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    Button("Start Free Trial") { showPaywall = true }
+                } else {
+                    Button("Manage Subscription") { showPaywall = true }
+                }
+            } header: {
+                Text("QuestScribe Pro")
+            } footer: {
+                Text("Pro unlocks unlimited note scanning. First 7 days are free, then $12.99/month.")
+            }
+
             Section {
                 SecureField("sk-...", text: $apiKey)
                     .textInputAutocapitalization(.never)
@@ -36,10 +57,21 @@ struct SettingsView: View {
                     }
                 }
             }
+
+            #if DEBUG
+            Section {
+                Toggle("Developer: Unlock Pro", isOn: $paywallManager.debugUnlocked)
+            } footer: {
+                Text("Debug builds only. Lets you test scanning without the subscription.")
+            }
+            #endif
         }
         .navigationTitle("Settings")
         .onAppear {
             apiKey = KeychainHelper.loadAPIKey() ?? ""
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView()
         }
         .alert("API Key Saved", isPresented: $showSaved) {
             Button("OK", role: .cancel) {}

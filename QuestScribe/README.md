@@ -48,15 +48,27 @@ QuestScribe/
 ├── Services/
 │   ├── VisionOCRManager.swift    Apple Vision OCR
 │   ├── DNDParserService.swift    OpenAI + JSON Schema + persistence
-│   └── KeychainHelper.swift      Secure API key storage
+│   ├── KeychainHelper.swift      Secure API key storage
+│   └── PaywallManager.swift      StoreKit 2 subscription + 7-day trial
 ├── ViewModels/
 │   └── ScanCoordinator.swift     Scan pipeline state machine
 └── Views/
-    ├── DashboardView.swift       HUD (Quests / Loot / NPCs / Settings) + FAB
+    ├── DashboardView.swift       HUD (Quests / Loot / NPCs / Settings)
     ├── CameraScannerView.swift   Camera + photo library pickers
     ├── ProcessingOverlayView.swift
-    └── SettingsView.swift        API key management
+    ├── PaywallView.swift         Subscription paywall (7-day trial → $12.99/mo)
+    └── SettingsView.swift        API key + subscription management
 ```
+
+## Monetization (paywall)
+
+QuestScribe gates scanning behind **Pro**: a 7-day free trial, then $12.99/month.
+
+- StoreKit 2 (`StoreKit` framework) drives the paywall in `Views/PaywallView.swift` via `SubscriptionStoreView`.
+- Product: `com.questscribe.pro.monthly`, subscription group `21653932` (see `QuestScribe.storekit`).
+- Sideloaded builds can't process real purchases, so the app also grants a **local 7-day trial** (first-launch date in UserDefaults). On App Store builds the StoreKit transaction takes over.
+- In DEBUG builds, Settings shows a "Developer: Unlock Pro" toggle for testing.
+- To ship for real: create the subscription in App Store Connect with the same product/group IDs and configure the 7-day introductory offer there.
 
 ## Notes
 
