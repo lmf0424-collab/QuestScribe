@@ -27,7 +27,7 @@ struct PaywallView: View {
             }
             .storeButton(.visible, for: .restorePurchases)
             .subscriptionStoreButtonLabel(.multiline)
-            .storeControlStyle(.automatic)
+            .subscriptionStoreControlStyle(.automatic)
             .subscriptionStorePickerItemStyle(.prominent)
             .navigationTitle("QuestScribe Pro")
             .navigationBarTitleDisplayMode(.inline)
