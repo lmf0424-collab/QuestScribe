@@ -45,7 +45,7 @@ final class Quest {
     var id: UUID = UUID()
     var title: String = ""
     var details: String = ""
-    var status: QuestStatus = .active
+    var status: QuestStatus = QuestStatus.active
     var sessionNote: SessionNote?
 
     @Relationship(inverse: \NPC.relatedQuests)

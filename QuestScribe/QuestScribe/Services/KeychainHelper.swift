@@ -62,7 +62,6 @@ enum KeychainHelper {
         return key
     }
 
-    @discardableResult
     static func deleteAPIKey() throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
