@@ -1,0 +1,10 @@
+# Xcode / QuestScribe build artifacts
+QuestScribe.xcodeproj/
+DerivedData/
+build/
+ipa/
+*.xcuserstate
+xcuserdata/
+
+# macOS
+.DS_Store
